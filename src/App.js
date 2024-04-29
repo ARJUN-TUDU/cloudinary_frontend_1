@@ -28,7 +28,7 @@ function App() {
       const {original_filename} = res.data;
 
       
-      await axios.post("http://localhost:5000/upload",{
+      await axios.post("https://cloudinary-1.vercel.app/upload",{
         image:secure_url,
         name:original_filename
       })
@@ -43,7 +43,7 @@ function App() {
      
     const getData = async() => {
           try{
-            const res = await axios.get("http://localhost:5000/all_image");
+            const res = await axios.get("https://cloudinary-1.vercel.app/all_image");
             setList(res.data)
           }catch(e){
             console.log(e)
