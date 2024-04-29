@@ -63,7 +63,7 @@ function App() {
       {
         list.map((x)=>{
           return <div style = {{width:"50vw",height:"50vh",margin:"30px"}}>
-            <img style={{width:"100%",height:"100%"}}  src = {`${x.image}`} />
+            <img style={{width:"100%",height:"100%",objectFit:"cover"}}  src = {`${x.image}`} />
             {x.name}
           </div>
         })
