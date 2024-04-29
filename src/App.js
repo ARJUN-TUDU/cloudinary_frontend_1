@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import {useState,useEffect} from 'react'
+import {useState,useEffect,useRef} from 'react'
 import axios from 'axios'
 
 function App() {
@@ -8,7 +8,10 @@ function App() {
  
   const [image,setImage] = useState();
   const [list,setList] = useState([]);
- 
+
+  const [flag,setFlag] = useState(false);
+  
+  const ref = useRef();
 
   const uploading = async ()=>{
 
@@ -18,20 +21,30 @@ function App() {
     formData.append("upload_preset","images_preset")
 
     try{
+      
       const cloudinary_name = "dubhkwfw6"
       const resource_type = "image"
       const api = `https://api.cloudinary.com/v1_1/${cloudinary_name}/${resource_type}/upload`;
       const res = await axios.post(api,formData);
+
+      
       
 
       const {secure_url} = res.data;
       const {original_filename} = res.data;
 
+      if(secure_url){
+        setFlag(true);
+        ref.current.value = "";
+        
+      }
+
       
-      await axios.post("https://cloudinary-1.vercel.app/upload",{
+      await axios.post("http://localhost:5000/upload",{
         image:secure_url,
         name:original_filename
       })
+      
      
     }catch(e){
       console.log(e);
@@ -43,7 +56,7 @@ function App() {
      
     const getData = async() => {
           try{
-            const res = await axios.get("https://cloudinary-1.vercel.app/all_image");
+            const res = await axios.get("http://localhost:5000/all_image");
             setList(res.data)
           }catch(e){
             console.log(e)
@@ -53,13 +66,27 @@ function App() {
     getData();
     
 
-  },[image])
+  },[image,flag])
 
   return (
     <div className="App">
-      <input type='file' onChange={e=>setImage(e.target.files[0])} />
+      <input  ref = {ref} type='file' onChange={e=>{
+        setFlag(false);
+        setImage(e.target.files[0])
+      }} />
       
-      <button onClick={uploading}>submit</button>
+    
+
+        {
+          flag?"done":  <button onClick={uploading}><div>
+
+          submit
+         
+         </div>
+         
+         </button>
+         }
+        
       {
         list.map((x)=>{
           return <div style = {{width:"50vw",height:"50vh",margin:"30px"}}>
